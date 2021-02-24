@@ -1,6 +1,17 @@
-class rook
-  @move_list =
-  [
-    [1, 0], [-1, 0], [0, 1], [0, -1]
-  ]
+class Rook
+  attr_reader :en_passant, :color, :icon
+
+  def initialize(color)
+    @color = color
+    @icon = get_icon()
+  end
+
+  def get_icon()
+    if @color == 'white'
+      @icon = '♖'
+    elsif @color == 'black'
+      @icon = '♜'
+    end
+  end
+
 end
