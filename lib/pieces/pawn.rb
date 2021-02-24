@@ -67,10 +67,10 @@ class Pawn
     end
     change_in_rank = coord_change[0]
     change_in_file = coord_change[1]
-    @color == 'black' ? valid_file = -1 : valid_file = 1
+    @color == 'black' ? valid_rank = -1 : valid_rank = 1
 
-    if change_in_rank == -1 || change_in_rank == 1
-      if change_in_file == valid_file
+    if change_in_file == -1 || change_in_file == 1
+      if change_in_rank == valid_rank
         @moved = true
         @en_passant = false
         return true
