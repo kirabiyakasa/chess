@@ -1,5 +1,4 @@
 require './board_builder'
-require './pieces/pawn'
 
 describe Pawn do
   context 'color is white' do
@@ -77,7 +76,7 @@ describe Pawn do
 
           black_piece = spaces[6][3]
           spaces[4][3] = black_piece
-          spaces[6][2] = ' '
+          spaces[6][3] = ' '
 
           expect(subject.check_legal_move([3, 2], [4, 3], spaces)).to eql(true)
         end
