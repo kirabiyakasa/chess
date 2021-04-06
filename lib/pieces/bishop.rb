@@ -1,4 +1,8 @@
+require 'pry'
+
 class Bishop
+  include PiecesHelper
+
   attr_reader :en_passant, :color, :icon
   
   def initialize(color)
@@ -8,51 +12,59 @@ class Bishop
 
   private
 
-  def validate_move()
-    # just check for diagonal
+  def validate_move(start_coords, end_coords, spaces, space)
+    x = end_coords[0] - start_coords[0]
+    y = end_coords[1] - start_coords[1]
+    coord_change = [x, y]
+    capture_coords = [end_coords[0], end_coords[1]]
+
+    if diagonal_movement?(start_coords, coord_change, end_coords, spaces)
+      capture(spaces, capture_coords)
+      return true
+    end
+    return false
   end
 
   def diagonal_movement?(start_coords, coord_change, end_coords, spaces)
-    destination = spaces[end_coords[0]][end_coords[1]]
-    start_x = start_coords[0]
-    start_y = start_coords[1]
-    change_in_x = coord_change[0]
-    change_in_y = coord_change[1]
-  
-    case change_in_x == change_in_y
-    when change_in_x < start_x && change_in_y < start_y
-      path = get_diagonal_moves([-1, -1], start_coords, end_coords, spaces)
-    when change_in_x < start_x && change_in_y > start_y
-      path = get_diagonal_moves([-1, 1], start_coords, end_coords, spaces)
-    when change_in_x > start_x && change_in_y < start_y
-      path = get_diagonal_moves([1, -1], start_coords, end_coords, spaces)
-    when change_in_x > start_x && change_in_y > start_y
-      path = get_diagonal_moves([1, 1], start_coords, end_coords, spaces)
-    end
-  
-    path.each do |space|
-      unless move == ' '
-        return false
-      end
-    end
-    unless destination == ' ' || destination.color == @color
-      return true
-    else
+    unless coord_change[0].abs == coord_change[1].abs
       return false
     end
+
+    start_rank = start_coords[0]
+    start_file = start_coords[1]
+    end_rank = end_coords[0]
+    end_file = end_coords[1]
+
+    direction = []
+    coord_change[0].positive? ? direction << 1 : direction << -1
+    coord_change[1].positive? ? direction << 1 : direction << -1
+    path = get_diagonal_moves(direction, start_coords, end_coords, spaces)
+    
+    return false if path.empty?
+
+    destination = path.pop
+
+    unless destination == ' ' || destination.color != @color
+      return false if destination.color == @color
+      path.each do |space|
+        if space != ' '
+          return false
+        end
+      end
+    end
+    return true
   end
   
   def get_diagonal_moves(direction, start_coords, end_coords, spaces)
     path = []
-    x = start_coords[0]
-    y = start_coords[1]
+    rank = start_coords[0]
+    file = start_coords[1]
   
-    until x == end_coords[0] && y == end_coords[1]
-      x += direction[0]
-      y += direction[1]
-      path << spaces[x][y]
+    until rank == end_coords[0] && file == end_coords[1]
+      rank += direction[0]
+      file += direction[1]
+      path << spaces[rank][file]
     end
-    path = path.pop
     return path
   end
 
