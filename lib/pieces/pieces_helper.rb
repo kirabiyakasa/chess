@@ -1,3 +1,5 @@
+require 'pry'
+
 module PiecesHelper
 
   def check_legal_move(start_coords, end_coords, spaces)
@@ -8,6 +10,8 @@ module PiecesHelper
     move_validity = validate_move(start_coords, end_coords, spaces, space)
     return move_validity
   end
+
+  private
 
   def capture(spaces, capture_coords)
     rank = capture_coords[0]
