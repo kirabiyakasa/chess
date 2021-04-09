@@ -1,7 +1,5 @@
 require './board_builder'
 
-require 'pry'
-
 describe Bishop do
   context 'color is White' do
     subject { Bishop.new('white') }
@@ -85,7 +83,7 @@ describe Bishop do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          expect(subject.check_legal_move([0, 2], [2, 4], spaces)).to eql(true)
+          expect(subject.check_legal_move([0, 2], [2, 4], spaces)).to eql(false)
         end
 
         it 'Returns true when capturing an opponent\'s piece.' do
