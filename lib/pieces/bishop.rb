@@ -3,7 +3,7 @@ require 'pry'
 class Bishop
   include PiecesHelper
 
-  attr_reader :en_passant, :color, :icon
+  attr_reader :color, :icon
   
   def initialize(color)
     @color = color
@@ -13,9 +13,9 @@ class Bishop
   private
 
   def validate_move(start_coords, end_coords, spaces, space)
-    x = end_coords[0] - start_coords[0]
-    y = end_coords[1] - start_coords[1]
-    coord_change = [x, y]
+    file = end_coords[0] - start_coords[0]
+    rank = end_coords[1] - start_coords[1]
+    coord_change = [file, rank]
     capture_coords = [end_coords[0], end_coords[1]]
 
     if diagonal_movement?(start_coords, coord_change, end_coords, spaces)
@@ -30,11 +30,6 @@ class Bishop
       return false
     end
 
-    start_rank = start_coords[0]
-    start_file = start_coords[1]
-    end_rank = end_coords[0]
-    end_file = end_coords[1]
-
     direction = []
     coord_change[0].positive? ? direction << 1 : direction << -1
     coord_change[1].positive? ? direction << 1 : direction << -1
@@ -43,13 +38,13 @@ class Bishop
     return false if path.empty?
 
     destination = path.pop
-
-    unless destination == ' ' || destination.color != @color
+    unless destination == ' '
       return false if destination.color == @color
-      path.each do |space|
-        if space != ' '
-          return false
-        end
+    end
+
+    path.each do |space|
+      if space != ' '
+        return false
       end
     end
     return true
@@ -57,13 +52,13 @@ class Bishop
   
   def get_diagonal_moves(direction, start_coords, end_coords, spaces)
     path = []
-    rank = start_coords[0]
-    file = start_coords[1]
+    file = start_coords[0]
+    rank = start_coords[1]
   
-    until rank == end_coords[0] && file == end_coords[1]
-      rank += direction[0]
-      file += direction[1]
-      path << spaces[rank][file]
+    until file == end_coords[0] && rank == end_coords[1]
+      file += direction[0]
+      rank += direction[1]
+      path << spaces[file][rank]
     end
     return path
   end

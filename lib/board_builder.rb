@@ -1,3 +1,5 @@
+require 'pry'
+
 require './lib/pieces/pieces_helper'
 
 require './lib/pieces/bishop.rb'
@@ -10,6 +12,36 @@ require './lib/pieces/rook.rb'
 class BoardBuilder
 
   def build_board()
+    white_pieces = get_pieces('white')
+    black_pieces = get_pieces('black')
+  
+    black_row1 = get_initial_row(black_pieces)
+    white_row1 = get_initial_row(white_pieces)
+    black_row2 = black_pieces[:pawn]
+    white_row2 = white_pieces[:pawn]
+  
+    spaces =
+    {
+      7 => [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      6 => [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      5 => [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      4 => [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      3 => [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      2 => [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      1 => [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+      0 => [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+    }
+  
+    spaces.keys.each do |file|
+      spaces[file][0] = white_row1.shift
+      spaces[file][1] = white_row2.shift
+      spaces[file][6] = black_row2.shift
+      spaces[file][7] = black_row1.shift
+    end
+    return spaces
+  end
+
+  def build_board_old()
     white_pieces = get_pieces('white')
     black_pieces = get_pieces('black')
 

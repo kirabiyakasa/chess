@@ -21,15 +21,8 @@ class Board
         start_coords = select_piece(interface, player)
       end
     end
-    binding.pry
-    # ---------------------------------
     move_resolved = resolve_move(start_coords, end_coords)
     return move_resolved
-    # get selected piece, move to space.
-    # proceed to next player's turn
-    # ---------------------------------
-    # get opposing player in this method
-    # pass start coords and end coords?
   end
 
   private
@@ -54,7 +47,7 @@ class Board
       rank = gets.chomp
     end
     rank = rank.to_i - 1
-    return [rank, file]
+    return [file, rank]
   end
   # y key is cancel
 
@@ -125,7 +118,6 @@ class Board
     @spaces[start_rank][start_file] = ' '
     return true
   end
-  # work here
 
   def convert_file(file)
     file_letters = ("a".."h").to_a

@@ -1,5 +1,5 @@
 class King
-  attr_reader :en_passant, :color, :icon
+  attr_reader :color, :icon
 
   def initialize(color)
     @color = color

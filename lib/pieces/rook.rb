@@ -13,9 +13,9 @@ class Rook
   private
 
   def validate_move(start_coords, end_coords, spaces, space)
-    x = end_coords[0] - start_coords[0]
-    y = end_coords[1] - start_coords[1]
-    coord_change = [x, y]
+    file = end_coords[0] - start_coords[0]
+    rank = end_coords[1] - start_coords[1]
+    coord_change = [file, rank]
     capture_coords = [end_coords[0], end_coords[1]]
 
     if vertical_movement?(start_coords, coord_change, end_coords, spaces)
@@ -29,14 +29,14 @@ class Rook
   end
 
   def vertical_movement?(start_coords, coord_change, end_coords, spaces)
-    return false if coord_change[0] == 0
-    unless coord_change[1] == 0
+    return false if coord_change[1] == 0
+    unless coord_change[0] == 0
       return false
     end
 
-    coord_change[0].positive? ? direction = [1, 0] : direction = [-1, 0]
+    coord_change[1].positive? ? direction = [0, 1] : direction = [0, -1]
 
-    path = get_moves(direction, start_coords, end_coords, spaces)
+    path = get_horiz_vert_moves(direction, start_coords, end_coords, spaces)
     return false if path.empty?
 
     destination = path.pop
@@ -53,14 +53,14 @@ class Rook
   end
 
   def horizontal_movement?(start_coords, coord_change, end_coords, spaces)
-    return false if coord_change[1] == 0
-    unless coord_change[0] == 0
+    return false if coord_change[0] == 0
+    unless coord_change[1] == 0
       return false
     end
 
-    coord_change[1].positive? ? direction = [0, 1] : direction = [0, -1]
+    coord_change[0].positive? ? direction = [1, 0] : direction = [-1, 0]
 
-    path = get_moves(direction, start_coords, end_coords, spaces)
+    path = get_horiz_vert_moves(direction, start_coords, end_coords, spaces)
     return false if path.empty?
 
     destination = path.pop
@@ -76,15 +76,15 @@ class Rook
     return true
   end
 
-  def get_moves(direction, start_coords, end_coords, spaces)
+  def get_horiz_vert_moves(direction, start_coords, end_coords, spaces)
     path = []
-    rank = start_coords[0]
-    file = start_coords[1]
+    file = start_coords[0]
+    rank = start_coords[1]
     
-    until rank == end_coords[0] && file == end_coords[1]
-      rank += direction[0]
-      file += direction[1]
-      path << spaces[rank][file]
+    until file == end_coords[0] && rank == end_coords[1]
+      file += direction[0]
+      rank += direction[1]
+      path << spaces[file][rank]
     end
     return path
   end
