@@ -20,7 +20,6 @@ class GameLogic
     until move_resolved == true
       move_resolved = @board.move_piece(@interface, player)
     end
-    binding.pry
     move_black()
   end
 
@@ -31,7 +30,6 @@ class GameLogic
     until move_resolved == true
       move_resolved = @board.move_piece(@interface, player)
     end
-    binding.pry
     move_white()
   end
 

@@ -8,10 +8,12 @@ class Interface
     board_display = "    (a)(b)(c)(d)(e)(f)(g)(h)\n"
     board_display += "                            \n"
 
+    j = 8
     8.times do |i|
+      j -= 1
       board_display += "(#{ranks[i]}) "
       spaces.keys.each do |file|
-        space = spaces[file][i]
+        space = spaces[file][j]
         unless space == ' '
           board_display += "[#{space.icon}]"
         else

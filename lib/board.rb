@@ -32,6 +32,7 @@ class Board
     file = gets.chomp
     until ('a'..'h').include?(file.downcase) || file == 'y'
       interface.show_invalid_input
+      interface.ask_for_file
       file = gets.chomp
     end
     if file == 'y'
@@ -44,6 +45,7 @@ class Board
     rank = gets.chomp
     until ('1'..'8').include?(rank)
       interface.show_invalid_input
+      interface.ask_for_rank
       rank = gets.chomp
     end
     rank = rank.to_i - 1
@@ -107,15 +109,15 @@ class Board
   end
 
   def resolve_move(start_coords, end_coords)
-    start_rank = start_coords[0]
-    start_file = start_coords[1]
+    start_file = start_coords[0]
+    start_rank = start_coords[1]
 
-    end_rank = end_coords[0]
-    end_file = end_coords[1]
+    end_file = end_coords[0]
+    end_rank = end_coords[1]
 
-    piece = @spaces[start_rank][start_file]
-    @spaces[end_rank][end_file] = piece
-    @spaces[start_rank][start_file] = ' '
+    piece = @spaces[start_file][start_rank]
+    @spaces[end_file][end_rank] = piece
+    @spaces[start_file][start_rank] = ' '
     return true
   end
 
