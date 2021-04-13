@@ -11,48 +11,48 @@ describe Bishop do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          white_pawn = spaces[1][2]
-          spaces[3][2] = white_pawn
-          spaces[1][2] = ' '
+          white_pawn = spaces[2][1]
+          spaces[2][3] = white_pawn
+          spaces[2][1] = ' '
 
-          expect(subject.check_legal_move([0, 2], [1, 2], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 0], [2, 1], spaces)).to eql(false)
         end
 
         it 'Returns false when moving horizontally.' do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          white_bishop = spaces[0][2]
+          white_bishop = spaces[2][0]
           spaces[2][2] = white_bishop
-          spaces[0][2] = ' '
+          spaces[2][0] = ' '
 
-          expect(subject.check_legal_move([2, 2], [2, 3], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 2], [3, 2], spaces)).to eql(false)
         end
 
         it 'Returns false when capturing vertically.' do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          white_bishop = spaces[0][2]
-          spaces[5][3] = white_bishop
-          spaces[0][2] = ' '
+          white_bishop = spaces[2][0]
+          spaces[3][5] = white_bishop
+          spaces[2][0] = ' '
 
-          expect(subject.check_legal_move([5, 3], [6, 3], spaces)).to eql(false)
+          expect(subject.check_legal_move([3, 5], [3, 6], spaces)).to eql(false)
         end
 
         it 'Returns false when capturing horizontally.' do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          black_pawn = spaces[6][4]
-          spaces[5][4] = black_pawn
-          spaces[6][4] = ' '
+          black_pawn = spaces[4][6]
+          spaces[4][5] = black_pawn
+          spaces[4][6] = ' '
 
-          white_bishop = spaces[0][2]
-          spaces[5][3] = white_bishop
-          spaces[0][2] = ' '
+          white_bishop = spaces[2][0]
+          spaces[3][5] = white_bishop
+          spaces[2][0] = ' '
 
-          expect(subject.check_legal_move([5, 3], [5, 4], spaces)).to eql(false)
+          expect(subject.check_legal_move([3, 5], [4, 5], spaces)).to eql(false)
         end
       end
 
@@ -61,47 +61,47 @@ describe Bishop do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          white_pawn = spaces[1][3]
-          spaces[2][3] = white_pawn
-          spaces[1][3] = ' '
+          white_pawn = spaces[3][1]
+          spaces[3][2] = white_pawn
+          spaces[3][1] = ' '
 
-          expect(subject.check_legal_move([0, 2], [1, 3], spaces)).to eql(true)
+          expect(subject.check_legal_move([2, 0], [3, 1], spaces)).to eql(true)
         end
 
         it 'Returns true when moving diagonally multiple spaces.' do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          white_pawn = spaces[1][3]
-          spaces[2][3] = white_pawn
-          spaces[1][3] = ' '
+          white_pawn = spaces[3][1]
+          spaces[3][2] = white_pawn
+          spaces[3][1] = ' '
 
-          expect(subject.check_legal_move([0, 2], [2, 4], spaces)).to eql(true)
+          expect(subject.check_legal_move([2, 0], [4, 2], spaces)).to eql(true)
         end
 
         it 'Returns false when moving diagonally through another piece.' do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          expect(subject.check_legal_move([0, 2], [2, 4], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 0], [4, 2], spaces)).to eql(false)
         end
 
         it 'Returns true when capturing an opponent\'s piece.' do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          white_bishop = spaces[0][2]
-          spaces[5][3] = white_bishop
-          spaces[0][2] = ' '
+          white_bishop = spaces[2][0]
+          spaces[3][5] = white_bishop
+          spaces[2][0] = ' '
 
-          expect(subject.check_legal_move([5, 3], [6, 4], spaces)).to eql(true)
+          expect(subject.check_legal_move([3, 5], [4, 6], spaces)).to eql(true)
         end
 
         it 'Returns false when capturing one\'s own piece.' do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          expect(subject.check_legal_move([0, 2], [1, 3], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 0], [3, 1], spaces)).to eql(false)
         end
       end
 
@@ -118,26 +118,26 @@ describe Bishop do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          black_pawn = spaces[6][2]
-          spaces[4][2] = black_pawn
-          spaces[6][2] = ' '
+          black_pawn = spaces[2][6]
+          spaces[2][4] = black_pawn
+          spaces[2][6] = ' '
 
-          expect(subject.check_legal_move([7, 2], [5, 2], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 7], [2, 5], spaces)).to eql(false)
         end
 
         it 'returns false when capturing horizontally.' do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          white_pawn = spaces[1][2]
-          spaces[5][3] = white_pawn
-          spaces[1][2] = ' '
+          white_pawn = spaces[2][1]
+          spaces[3][5] = white_pawn
+          spaces[2][1] = ' '
 
-          black_bishop = spaces[7][2]
-          spaces[5][2] = black_bishop
-          spaces[7][2] = ' '
+          black_bishop = spaces[2][7]
+          spaces[2][5] = black_bishop
+          spaces[2][7] = ' '
 
-          expect(subject.check_legal_move([5, 2], [5, 3], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 5], [3, 5], spaces)).to eql(false)
         end
       end
 
@@ -146,15 +146,15 @@ describe Bishop do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          black_bishop = spaces[7][2]
-          spaces[5][2] = black_bishop
-          spaces[5][2] = ' '
+          black_bishop = spaces[2][7]
+          spaces[2][5] = black_bishop
+          spaces[2][5] = ' '
 
           white_rook = spaces[0][0]
-          spaces[4][3] = white_rook
+          spaces[3][4] = white_rook
           spaces[0][0] = ' '
 
-          expect(subject.check_legal_move([5, 2], [4, 3], spaces)).to eql(true)
+          expect(subject.check_legal_move([2, 5], [3, 4], spaces)).to eql(true)
         end
       end
 

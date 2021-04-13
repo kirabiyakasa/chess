@@ -12,22 +12,22 @@ describe Pawn do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          expect(subject.check_legal_move([1, 2], [2, 2], spaces)).to eql(true)
+          expect(subject.check_legal_move([2, 1], [2, 2], spaces)).to eql(true)
         end
 
         it 'Returns true if moving twice from it\'s starting position.' do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          expect(subject.check_legal_move([1, 2], [3, 2], spaces)).to eql(true)
+          expect(subject.check_legal_move([2, 1], [2, 3], spaces)).to eql(true)
         end
 
         it 'Returns false if moving twice after having already moved.' do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          subject.check_legal_move([1, 2], [2, 2], spaces)
-          expect(subject.check_legal_move([2, 2], [4, 2], spaces)).to eql(false)
+          subject.check_legal_move([2, 1], [2, 2], spaces)
+          expect(subject.check_legal_move([2, 2], [2, 4], spaces)).to eql(false)
         end
 
         it 'Returns false if moving 3 or more times from it\'s starting 
@@ -35,7 +35,7 @@ describe Pawn do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          expect(subject.check_legal_move([1, 2], [4, 2], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 1], [2, 4], spaces)).to eql(false)
         end
 
         it 'Returns false when trying to capture an opponent\'s piece 
@@ -43,15 +43,15 @@ describe Pawn do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          white_piece = spaces[1][2]
-          spaces[3][2] = white_piece
-          spaces[1][2] = ' '
+          white_piece = spaces[2][1]
+          spaces[2][3] = white_piece
+          spaces[2][1] = ' '
 
-          black_piece = spaces[6][2]
-          spaces[4][2] = black_piece
-          spaces[6][2] = ' '
+          black_piece = spaces[2][6]
+          spaces[2][4] = black_piece
+          spaces[2][6] = ' '
 
-          expect(subject.check_legal_move([3, 2], [4, 2], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 3], [2, 4], spaces)).to eql(false)
         end
 
       end
@@ -62,7 +62,7 @@ describe Pawn do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
             
-          expect(subject.check_legal_move([1, 2], [2, 1], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 1], [1, 2], spaces)).to eql(false)
         end
 
         it 'Returns true if moving diagonally while capturing opponent\'s 
@@ -70,26 +70,26 @@ describe Pawn do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          white_piece = spaces[1][2]
-          spaces[3][2] = white_piece
-          spaces[1][2] = ' '
+          white_piece = spaces[2][1]
+          spaces[2][3] = white_piece
+          spaces[2][1] = ' '
 
-          black_piece = spaces[6][3]
-          spaces[4][3] = black_piece
-          spaces[6][3] = ' '
+          black_piece = spaces[3][6]
+          spaces[3][4] = black_piece
+          spaces[3][6] = ' '
 
-          expect(subject.check_legal_move([3, 2], [4, 3], spaces)).to eql(true)
+          expect(subject.check_legal_move([2, 3], [3, 4], spaces)).to eql(true)
         end
 
         it 'Returns false if attempting to capture one\'s own piece' do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          white_piece2 = spaces[1][3]
-          spaces[2][3] = white_piece2
-          spaces[1][3] = ' '
+          white_piece2 = spaces[3][1]
+          spaces[3][2] = white_piece2
+          spaces[3][1] = ' '
 
-          expect(subject.check_legal_move([1, 2], [2, 3], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 1], [3, 2], spaces)).to eql(false)
         end
 
       end
@@ -100,16 +100,16 @@ describe Pawn do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          white_piece = spaces[1][2]
-          spaces[4][2] = white_piece
-          spaces[1][2] = ' '
+          white_piece = spaces[2][1]
+          spaces[2][4] = white_piece
+          spaces[2][1] = ' '
 
-          black_piece = spaces[6][3]
-          black_piece.check_legal_move([6, 3], [4, 3], spaces)
-          spaces[4][3] = black_piece
-          spaces[6][3] = ' '
+          black_piece = spaces[3][6]
+          black_piece.check_legal_move([3, 6], [3, 4], spaces)
+          spaces[3][4] = black_piece
+          spaces[3][6] = ' '
 
-          expect(subject.check_legal_move([4, 2], [5, 3], spaces)).to eql(true)
+          expect(subject.check_legal_move([2, 4], [3, 5], spaces)).to eql(true)
         end
 
         it 'Returns false when trying to capture via en passant without the 
@@ -117,36 +117,36 @@ describe Pawn do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          white_piece = spaces[1][2]
-          spaces[4][2] = white_piece
-          spaces[1][2] = ' '
+          white_piece = spaces[2][1]
+          spaces[2][4] = white_piece
+          spaces[2][1] = ' '
 
-          black_piece = spaces[6][3]
-          black_piece.check_legal_move([6, 3], [5, 3], spaces)
-          spaces[5][3] = black_piece
-          spaces[6][3] = ' '
+          black_piece = spaces[3][6]
+          black_piece.check_legal_move([3, 6], [3, 5], spaces)
+          spaces[3][5] = black_piece
+          spaces[3][6] = ' '
 
-          black_piece.check_legal_move([5, 3], [4, 3], spaces)
-          spaces[4][3] = black_piece
-          spaces[5][3] = ' '
+          black_piece.check_legal_move([3, 5], [3, 4], spaces)
+          spaces[3][4] = black_piece
+          spaces[3][5] = ' '
 
-          expect(subject.check_legal_move([4, 2], [5, 3], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 4], [3, 5], spaces)).to eql(false)
         end
 
         it 'Returns false when trying to capture one\'s own piece.' do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          white_piece1 = spaces[1][2]
-          spaces[3][2] = white_piece1
-          spaces[1][2] = ' '
+          white_piece1 = spaces[2][1]
+          spaces[2][3] = white_piece1
+          spaces[2][1] = ' '
 
-          white_piece2 = spaces[1][3]
-          white_piece2.check_legal_move([1, 3], [3, 3], spaces)
+          white_piece2 = spaces[3][1]
+          white_piece2.check_legal_move([3, 1], [3, 3], spaces)
           spaces[3][3] = white_piece2
-          spaces[1][3] = ' '
+          spaces[3][1] = ' '
 
-          expect(subject.check_legal_move([3, 2], [4, 3], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 3], [3, 4], spaces)).to eql(false)
         end
 
       end
@@ -157,18 +157,18 @@ describe Pawn do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          expect(subject.check_legal_move([1, 2], [6, 0], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 1], [0, 6], spaces)).to eql(false)
         end
 
         it 'Returns false when moving onto one\'s own piece.' do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          white_piece2 = spaces[1][3]
-          spaces[2][3] = white_piece2
-          spaces[1][3] = ' '
+          white_piece2 = spaces[3][1]
+          spaces[3][2] = white_piece2
+          spaces[3][1] = ' '
 
-          expect(subject.check_legal_move([1, 2], [2, 3], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 1], [3, 2], spaces)).to eql(false)
         end
       end
 
@@ -186,7 +186,7 @@ describe Pawn do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          expect(subject.check_legal_move([6, 2], [5, 2], spaces)).to eql(true)
+          expect(subject.check_legal_move([2, 6], [2, 5], spaces)).to eql(true)
         end
 
         it 'Returns false if moving 3 or more times from it\'s starting 
@@ -194,7 +194,7 @@ describe Pawn do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          expect(subject.check_legal_move([6, 2], [3, 2], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 6], [2, 3], spaces)).to eql(false)
         end
       end
 
@@ -204,7 +204,7 @@ describe Pawn do
           board_builder = BoardBuilder.new
           spaces = board_builder.build_board
 
-          expect(subject.check_legal_move([6, 2], [5, 1], spaces)).to eql(false)
+          expect(subject.check_legal_move([2, 6], [1, 5], spaces)).to eql(false)
         end
 
         it 'Returns true if moving diagonally while capturing opponent\'s 
@@ -213,10 +213,10 @@ describe Pawn do
           spaces = board_builder.build_board
 
           white_piece = spaces[1][1]
-          spaces[5][1] = white_piece
+          spaces[1][5] = white_piece
           spaces[1][1] = ' '
 
-          expect(subject.check_legal_move([6, 2], [5, 1], spaces)).to eql(true)
+          expect(subject.check_legal_move([2, 6], [1, 5], spaces)).to eql(true)
         end
       end
 
