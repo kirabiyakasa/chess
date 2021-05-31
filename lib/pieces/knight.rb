@@ -33,9 +33,9 @@ class Knight
 
   def get_icon()
     if @color == 'white'
-      @icon = '♘'
+      return '♘'
     elsif @color == 'black'
-      @icon = '♞'
+      return '♞'
     end
   end
 
