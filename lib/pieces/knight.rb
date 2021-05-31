@@ -1,5 +1,8 @@
+require './lib/pieces/pieces_helpers/knight_helper'
+
 class Knight
   include PiecesHelper
+  include KnightHelper
 
   attr_reader :color, :icon
 
@@ -23,18 +26,6 @@ class Knight
 
     if knight_movement?(start_coords, coord_change, end_coords, spaces)
       capture(spaces, capture_coords)
-      return true
-    end
-    return false
-  end
-
-  def knight_movement?(start_coords, coord_change, end_coords, spaces)
-    destination = spaces[end_coords[0]][end_coords[1]]
-    unless destination == ' '
-      return false if destination.color == @color
-    end
-
-    if @move_list.include?(coord_change)
       return true
     end
     return false
