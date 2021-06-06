@@ -1,4 +1,9 @@
+require './lib/pieces/pieces_helpers/king_helper'
+
 class King
+  include PiecesHelper
+  include KingHelper
+
   attr_reader :color, :icon
 
   def initialize(color)
@@ -7,11 +12,16 @@ class King
     @checked_by = []
   end
 
+  private
+
+  def validate_move(start_coords, end_coords, spaces, space)
+  end
+
   def get_icon()
     if @color == 'white'
-      @icon = '♔'
+      return '♔'
     elsif @color == 'black'
-      @icon = '♚'
+      return '♚'
     end
   end
 
