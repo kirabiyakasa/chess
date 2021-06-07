@@ -41,29 +41,6 @@ class BoardBuilder
     return spaces
   end
 
-  def build_board_old()
-    white_pieces = get_pieces('white')
-    black_pieces = get_pieces('black')
-
-    black_row1 = get_initial_row(black_pieces)
-    white_row1 = get_initial_row(white_pieces)
-    black_row2 = black_pieces[:pawn]
-    white_row2 = white_pieces[:pawn]
-  
-    spaces =
-    {
-      7 => black_row1,
-      6 => black_row2,
-      5 => [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-      4 => [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-      3 => [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-      2 => [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-      1 => white_row2,
-      0 => white_row1
-    }
-    return spaces
-  end
-
   private
 
   def get_pieces(color)
