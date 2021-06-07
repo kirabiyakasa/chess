@@ -1,8 +1,12 @@
-require './lib/pieces/pieces_helpers/king_helper'
+require './lib/pieces/pieces_helpers/king_helpers/king_helper'
+require './lib/pieces/pieces_helpers/king_helpers/check_helper'
+require './lib/pieces/pieces_helpers/king_helpers/checkmate_helper'
 
 class King
   include PiecesHelper
   include KingHelper
+  include CheckHelper
+  include CheckmateHelper
 
   attr_reader :color, :icon
 
