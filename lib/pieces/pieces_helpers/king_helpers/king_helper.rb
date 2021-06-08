@@ -26,33 +26,17 @@ module KingHelper
 
   def checkmate?(king_coords, spaces, board)
     enemy_paths = get_check_paths(king_coords, spaces, board)
-
-    king_moves = [
-      [-1, 1], [0, 1], [1, 1], [1, 0],
-      [1, -1], [0, -1], [-1, -1], [-1, 0]
-    ]
+    king_moves = get_moves[:king_moves]
 
     legal_king_moves = get_legal_king_moves(king_coords, king_moves,
                                             board, enemy_paths)
-    # stuff
-
-    if @checked_by.length == 1
-      legal_moves = get_legal_moves()
+    if @checked_by.length < 2
+      legal_moves = get_legal_move_list(king_coords, board, enemy_paths)
       return legal_moves + legal_king_moves
       # can move king or block with another piece
-      # other piece can move to any space in enemy_paths than is not the king
     elsif @checked_by.length > 1
       return legal_king_moves
       # can only move king
     end
-    # when checked
-    # move every piece every direction
-    # when moving a piece, is the king still in check?
-    # if false, return the legal move
-    # put legal moves in array
-    # if array empty, checkmate is true
   end
-  # if the king is checked by one piece, can block with another
-  # if king is checked by more than one, must move king
-
 end

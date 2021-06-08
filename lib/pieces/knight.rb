@@ -9,11 +9,6 @@ class Knight
   def initialize(color)
     @color = color
     @icon = get_icon()
-    @move_list =
-    [
-      [-2, 1], [-1, 2], [2, 1], [1, 2],
-      [-2, -1], [-1, -2], [2, -1], [1, -2]
-    ]
   end
 
   private

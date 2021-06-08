@@ -8,7 +8,8 @@ module KnightHelper
       return false if destination.color == @color
     end
 
-    if @move_list.include?(coord_diff)
+    move_list = get_moves[:knight_moves]
+    if move_list.include?(coord_diff)
       return true
     end
     return false

@@ -3,13 +3,15 @@ require './lib/board_builder.rb'
 require 'pry'
 
 class Board
-  attr_reader :p1, :p2, :spaces
+  attr_reader :p1, :p2, :white_king, :black_king, :spaces
 
   def initialize(player1, player2)
     @p1 = player1
     @p2 = player2
     board_builder = BoardBuilder.new
     @spaces = board_builder.build_board
+    @white_king = @spaces[4][0]
+    @black_king = @spaces[4][7]
   end
 
   def move_piece(interface, player)
@@ -23,6 +25,19 @@ class Board
     end
     move_resolved = resolve_move(start_coords, end_coords)
     return move_resolved
+  end
+
+  def get_piece_coords(piece)
+    x = nil
+    y = nil
+
+    @spaces.keys.each do |column|
+      if @spaces[column].include?(piece)
+        x = column
+        y = @spaces[column].find_index(piece)
+        return [x, y]
+      end
+    end
   end
 
   private
@@ -40,7 +55,7 @@ class Board
       return 'cancel'
     end
     file = convert_file(file.downcase).to_i
-  
+
     interface.ask_for_rank
     rank = gets.chomp
     until ('1'..'8').include?(rank)
@@ -92,6 +107,9 @@ class Board
       if move_legality == false
         interface.show_invalid_destination
         end_coords = get_coordinates(interface)
+    # elsif checked?
+    #   move_legality = false
+    # end
       else
         space = get_space(end_coords)
       end

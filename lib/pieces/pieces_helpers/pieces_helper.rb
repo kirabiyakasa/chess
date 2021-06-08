@@ -11,6 +11,28 @@ module PiecesHelper
     return move_validity
   end
 
+  def get_moves()
+    moves = { 
+      :bishop_moves => [[-1, 1], [1, 1], [1, -1], [-1, -1]],
+      :rook_moves => [[0, 1], [1, 0], [0, -1], [-1, 0]],
+      :king_moves => [
+        [-1, 1], [0, 1], [1, 1], [1, 0],
+        [1, -1], [0, -1], [-1, -1], [-1, 0]
+      ],
+      :knight_moves => [
+        [-2, 1], [-1, 2], [2, 1], [1, 2],
+        [-2, -1], [-1, -2], [2, -1], [1, -2]
+      ]
+    }
+
+    if @color == 'black'
+      moves[:pawn_moves] = [[-1, 1], [0, 1], [1, 1]]
+    else
+      moves[:pawn_moves] = [[-1, -1], [0, -1], [1, -1]]
+    end
+    return moves
+  end
+
   private
 
   def capture(spaces, capture_coords)

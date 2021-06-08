@@ -1,11 +1,11 @@
 module CheckHelper
 
   def checked_vertically_or_horizontally?(king_coords, spaces)
-    vert_horiz_directions = [[-1, 0], [0, 1], [1, 0], [0, -1]]
+    vert_horiz_directions = get_moves[:rook_moves]
     pieces = []
 
     vert_horiz_directions.each do |direction|
-      pieces << get_vertical_piece(king_coords, direction, spaces)
+      pieces << get_vert_horiz_piece(king_coords, direction, spaces)
     end
 
     pieces.each do |piece|
@@ -17,9 +17,9 @@ module CheckHelper
     end
   end
 
-  def get_vertical_piece(king_coords, direction, spaces)
-    file = king_coords[0] + direction[0]
-    rank = king_coords[1] + direction[1]
+  def get_vert_horiz_piece(piece_coords, direction, spaces)
+    file = piece_coords[0] + direction[0]
+    rank = piece_coords[1] + direction[1]
 
     until spaces[file] == nil || spaces[file][rank] != ' '
       file += direction[0]
@@ -33,12 +33,12 @@ module CheckHelper
     end
   end
 
-  def checked_diagonally?(king_coords, spaces)
-    diag_directions = [[-1, 1], [1, 1], [1, -1], [-1, -1]]
+  def checked_diagonally?(piece_coords, spaces)
+    diag_directions = get_moves[:bishop_moves]
     pieces = []
 
     diag_directions.each do |direction|
-      pieces << get_diagonal_piece(king_coords, direction, spaces)
+      pieces << get_diagonal_piece(piece_coords, direction, spaces)
     end
 
     pieces.each do |piece|
@@ -54,12 +54,12 @@ module CheckHelper
     file = king_coords[0] + direction[0]
     rank = king_coords[1] + direction[1]
 
-    until spaces[file] == nil || spaces[file][rank] != ' '
+    until spaces[file] == nil || spaces[file][rank] != ' ' || rank < 0
       file += direction[0]
       rank += direction[1]
     end
 
-    unless spaces[file] == nil
+    unless spaces[file] == nil || rank < 0
       if spaces[file][rank].class.name == 'Pawn'
         return checked_by_pawn?(king_coords, [file, rank], spaces)
       else
@@ -92,10 +92,7 @@ module CheckHelper
   end
 
   def checked_by_knight?(king_coords, spaces)
-    knight_moves = [
-      [-2, 1], [-1, 2], [2, 1], [1, 2],
-      [-2, -1], [-1, -2], [2, -1], [1, -2]
-    ]
+    knight_moves = get_moves[:knight_moves]
     pieces = []
 
     knight_moves.each do |move|
@@ -115,7 +112,7 @@ module CheckHelper
     file = king_coords[0] + move[0]
     rank = king_coords[1] + move[1]
 
-    unless spaces[file] == nil
+    unless spaces[file] == nil || rank < 0
       if spaces[file][rank].class.name == 'Knight'
         return spaces[file][rank]
       else
