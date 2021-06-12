@@ -21,12 +21,12 @@ module CheckHelper
     file = piece_coords[0] + direction[0]
     rank = piece_coords[1] + direction[1]
 
-    until spaces[file] == nil || spaces[file][rank] != ' '
+    until spaces[file] == nil || spaces[file][rank] != ' ' || rank < 0
       file += direction[0]
       rank += direction[1]
     end
 
-    unless spaces[file] == nil
+    unless spaces[file] == nil || rank < 0
       return spaces[file][rank]
     else
       return nil
