@@ -1,4 +1,4 @@
-require './board_builder'
+require './lib/board_builder'
 
 describe Pawn do
   context 'color is white' do

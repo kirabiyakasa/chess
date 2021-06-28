@@ -1,9 +1,9 @@
 
 require 'pry'
 
-require './board_builder'
-require './board'
-require './player'
+require './lib/board_builder'
+require './lib/board'
+require './lib/player'
 
 describe King do
   context 'color is white' do
@@ -13,7 +13,7 @@ describe King do
       
       context 'When checked but not in checkmate.' do
         context 'When forced to move the king.' do
-          xit 'Returns 2 valid moves when checked by a rook and bishop.' do
+          it 'Returns 2 valid moves when checked by a rook and bishop.' do
             p1 = Player.new('white', 'p1')
             p2 = Player.new('black', 'p2')
 
@@ -36,7 +36,7 @@ describe King do
             expect(subject.checkmate?([0, 4], spaces, board).count).to eql(2)
           end
 
-          xit 'Returns 5 valid moves when checked by a queen and knight.' do
+          it 'Returns 5 valid moves when checked by a queen and knight.' do
             p1 = Player.new('white', 'p1')
             p2 = Player.new('black', 'p2')
 
@@ -65,7 +65,7 @@ describe King do
         end
 
         context 'When forced to block the enemy piece.' do
-          xit 'Returns 5 valid moves when checked by a bishop.' do
+          it 'Returns 5 valid moves when checked by a bishop.' do
             p1 = Player.new('white', 'p1')
             p2 = Player.new('black', 'p2')
 
@@ -82,7 +82,7 @@ describe King do
             expect(subject.checkmate?([4, 0], spaces, board).count).to eql(5)
           end
 
-          xit 'Returns 1 valid move when checked by a rook.' do
+          it 'Returns 1 valid move when checked by a rook.' do
             p1 = Player.new('white', 'p1')
             p2 = Player.new('black', 'p2')
 
@@ -115,7 +115,7 @@ describe King do
         end
 
         context 'When able to move king or block' do
-          xit 'Returns 7 valid moves when checked by a pawn.' do
+          it 'Returns 7 valid moves when checked by a pawn.' do
             p1 = Player.new('white', 'p1')
             p2 = Player.new('black', 'p2')
 

@@ -1,4 +1,4 @@
-require './board_builder'
+require './lib/board_builder'
 
 describe Bishop do
   context 'color is White' do
