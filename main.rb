@@ -9,9 +9,9 @@ def get_name(player_num)
   return name
 end
 
-def choose_color(colors)
+def choose_color(colors, name)
   if colors.length == 2
-    puts "\nSelect a Color for #{@name}."
+    puts "\nSelect a Color for #{name}."
     puts "\n1) Black    2) White"
     answer = gets.chomp
     until answer == '1' || answer == '2'
@@ -27,10 +27,10 @@ end
 
 def setup_players(colors)
   p1_name = get_name('player 1')
-  p2_name = get_name('player 2')
+  p1_color = choose_color(colors, p1_name)
 
-  p1_color = choose_color(colors)
-  p2_color - choose_color(colors)
+  p2_name = get_name('player 2')
+  p2_color = colors[0]
 
   player1 = Player.new(p1_color, p1_name)
   player2 = Player.new(p2_color, p2_name)
