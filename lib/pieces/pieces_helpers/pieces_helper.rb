@@ -25,7 +25,7 @@ module PiecesHelper
       ]
     }
 
-    if @color == 'black'
+    if @color == 'white'
       moves[:pawn_moves] = [[-1, 1], [0, 1], [1, 1]]
     else
       moves[:pawn_moves] = [[-1, -1], [0, -1], [1, -1]]
