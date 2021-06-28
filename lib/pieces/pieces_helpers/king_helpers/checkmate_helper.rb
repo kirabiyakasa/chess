@@ -64,41 +64,51 @@ module CheckmateHelper
   end
 
   def get_legal_move_list(king_coords, board, enemy_paths)
+    legal_moves = []
+
+    enemy_paths.each do |enemy_coords|
+      legal_moves += get_legal_moves(king_coords, board, enemy_coords)
+    end
+    return legal_moves
+  end
+
+  # enemy coords == destination
+  # move coords == direction
+  def get_legal_moves(king_coords, board, enemy_coords)
     spaces = board.spaces
     ally_moves = get_moves()
     legal_moves = []
 
-    enemy_paths.each do |enemy_coords|
-      ally_moves.each do |move_type, move_set|
-        move_set.each do |move_coords|
+    ally_moves.each do |move_type, move_set|
+      move_set.each do |move_coords|
 
-          case move_type
-          when :rook_moves
-            piece = get_vert_horiz_piece(enemy_coords, move_coords, spaces)
-            legal_move = get_legal_vert_horiz_moves([king_coords, enemy_coords],
-                                                     board, piece)
-            legal_move == nil ? nil : legal_moves << legal_move
-          when :bishop_moves
-            piece = get_diagonal_piece(enemy_coords, move_coords, spaces)
-            legal_move = get_legal_diag_moves([king_coords, enemy_coords],
+        case move_type
+        when :rook_moves
+          piece = get_vert_horiz_piece(enemy_coords, move_coords, spaces)
+          legal_move = get_legal_vert_horiz_moves([king_coords, enemy_coords],
+                                                   board, piece)
+          legal_move == nil ? nil : legal_moves << legal_move
+        when :bishop_moves
+          piece = get_diagonal_piece(enemy_coords, move_coords, spaces)
+          legal_move = get_legal_diag_moves([king_coords, enemy_coords],
+                                             board, piece)
+          legal_move == nil ? nil : legal_moves << legal_move
+        when :knight_moves
+          piece = get_knight(enemy_coords, move_coords, spaces)
+          legal_move = get_legal_knight_moves([king_coords, enemy_coords],
                                                board, piece)
-            legal_move == nil ? nil : legal_moves << legal_move
-          when :knight_moves
-            piece = get_knight(enemy_coords, move_coords, spaces)
-            legal_move = get_legal_knight_moves([king_coords, enemy_coords],
-                                                 board, piece)
-            legal_move == nil ? nil : legal_moves << legal_move
-          when :pawn_moves
-            legal_move = get_legal_pawn_moves(king_coords, enemy_coords,
-                                               move_coords, spaces)
-            legal_move == nil ? nil : legal_moves << legal_move
-          end
+          legal_move == nil ? nil : legal_moves << legal_move
+        when :pawn_moves
+          legal_move = get_legal_pawn_moves(king_coords, enemy_coords,
+                                            move_coords, spaces)
+          legal_move == nil ? nil : legal_moves << legal_move
         end
       end
     end
     return legal_moves
   end
 
+  # enemy coords is destination
   def get_legal_vert_horiz_moves(coords, board, piece)
     king_coords = coords[0]
     enemy_coords = coords[1]
@@ -115,6 +125,7 @@ module CheckmateHelper
         end
       end
     end
+    return nil
   end
 
   def get_legal_diag_moves(coords, board, piece)
@@ -126,13 +137,14 @@ module CheckmateHelper
 
     if piece != nil && piece.color == @color
       if mock_move(king_coords, piece_coords, enemy_coords, spaces)
-        if piece.class.name == 'Bishop' ||piece.class.name == 'Queen'
+        if piece.class.name == 'Bishop' || piece.class.name == 'Queen'
           return piece_coords
         else
           return nil
         end
       end
     end
+    return nil
   end
 
   def get_legal_knight_moves(coords, board, piece)
@@ -149,31 +161,60 @@ module CheckmateHelper
         return nil
       end
     end
+    return nil
   end
 
-  def get_legal_pawn_moves(king_coords, enemy_coords, move_coords, spaces)
+  def get_legal_pawn_moves(king_coords, destination, move_coords, spaces)
+    ally_piece = nil
     piece_coords = []
-    piece_coords << enemy_coords[0] + move_coords[0]
-    piece_coords << enemy_coords[1] + move_coords[1]
+    piece_coords << destination[0] - move_coords[0]
+    piece_coords << destination[1] - move_coords[1]
 
     unless spaces[piece_coords[0]] == nil
-      piece = spaces[piece_coords[0]][piece_coords[1]]
+      ally_piece = spaces[piece_coords[0]][piece_coords[1]]
+      return nil if ally_piece == nil || ally_piece.class.name != 'Pawn'
     end
 
-    if mock_move(king_coords, piece_coords, enemy_coords, spaces)
-      file = enemy_coords[0]
-      rank = enemy_coords[1]
-      if (move_coords[0] == 0 && spaces[file][rank] == ' ' ||
-          move_coords[0] != 0 && spaces[file][rank] != ' ')
-        unless @color == 'white' && rank < 0 || @color == 'black' && rank > 0
-          if piece.class.name == 'Pawn'
-            return piece_coords
-          else
-            return nil
-          end
-        end
+    file = destination[0]
+    rank = destination[1]
+
+    if (move_coords[0] == 0 && spaces[file][rank] == ' ' ||
+        move_coords[0] != 0 && spaces[file][rank] != ' ')
+      if mock_move(king_coords, piece_coords, destination, spaces)
+        return piece_coords
+      end
+    elsif move_coords[0] != 0 && spaces[file][rank] == ' '
+      # it thinks the destination (enemy rook) is an ally pawn and the pieces
+      # to the side are enemy pawns
+      if legal_en_passant?([king_coords, destination, piece_coords],
+                            spaces, ally_piece)
+        return piece_coords
       end
     end
+    return nil
+  end
+  
+  def legal_en_passant?(coords, spaces, ally_piece)
+    king_coords = coords[0]
+    destination = coords[1]
+    piece_coords = coords[2]
+
+    legality = false
+    coord_change = []
+    coord_change << destination[0] - piece_coords[0]
+    coord_change << destination[1] - piece_coords[1]
+
+    file = destination[0]
+    rank = destination[1]
+
+    if ally_piece.en_passant?(piece_coords, coord_change, destination,
+                              spaces)
+      enemy_piece = spaces[file][rank + -coord_change[1]]
+      spaces[file][rank + -coord_change[1]] = ' '
+      legality = mock_move(king_coords, piece_coords, destination, spaces)
+      spaces[file][rank + -coord_change[1]] = enemy_piece
+    end
+    return legality
   end
 
   def mock_move(king_coords, piece_coords, piece_move, spaces)

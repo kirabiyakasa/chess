@@ -1,5 +1,29 @@
 module PawnHelper
 
+  def en_passant?(start_coords, coord_change, end_coords, spaces)
+    opposing_piece = spaces[end_coords[0]][end_coords[1] - coord_change[1]]
+    if opposing_piece == ' ' || opposing_piece.color == @color
+      return false
+    elsif coord_change[1] > 1 || coord_change[1] < -1
+      return false
+    end
+    return false unless opposing_piece.class.name == 'Pawn'
+  
+    unless opposing_piece.en_passant == false
+      case start_coords[1]
+      when 3
+        if @color == 'black' && coord_change[1] == -1
+          return true
+        end
+      when 4
+        if @color == 'white' && coord_change[1] == 1
+          return true
+        end
+      end
+    end
+    return false
+  end
+
   private
 
   def vertical_movement?(coord_change, end_coords, spaces)
@@ -40,29 +64,6 @@ module PawnHelper
         @moved = true
         @en_passant = false
         return true
-      end
-    end
-    return false
-  end
-
-  def en_passant?(start_coords, coord_change, end_coords, spaces)
-    opposing_piece = spaces[end_coords[0]][end_coords[1] - coord_change[1]]
-    if opposing_piece == ' ' || opposing_piece.color == @color
-      return false
-    elsif coord_change[1] > 1 || coord_change[1] < -1
-      return false
-    end
-  
-    unless opposing_piece.en_passant == false
-      case start_coords[1]
-      when 3
-        if @color == 'black' && coord_change[1] == -1
-          return true
-        end
-      when 4
-        if @color == 'white' && coord_change[1] == 1
-          return true
-        end
       end
     end
     return false

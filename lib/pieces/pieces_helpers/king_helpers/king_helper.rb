@@ -15,13 +15,37 @@ module KingHelper
     end
   end
 
-  def stalemate?(king_coords)
-    # when not checked
-    # move every piece every direction
-    # when moving a piece, is the king in check?
-    # if false, return the legal move
-    # put legal moves in array
-    # if array empty, stalemate is true
+  def stalemate?(king_coords, board)
+    king_moves = get_moves[:king_moves]
+    legal_king_moves = get_legal_king_moves(king_coords, king_moves, board,
+                                            [[king_coords[0], king_coords[1]]])
+    if legal_king_moves.any?
+      return false
+    end
+
+    available_pieces = get_available_pieces(board)
+
+    if moveable_pieces?(king_coords, available_pieces, board)
+      return false
+    else
+      return true
+    end
+  end
+
+  def get_available_pieces(board)
+    spaces = board.spaces
+    pieces = []
+
+    spaces.keys.each do |column|
+      spaces[column].each do |space|
+        unless space == ' '
+          if space.color == @color
+            pieces << space
+          end
+        end
+      end
+    end
+    return pieces
   end
 
   def checkmate?(king_coords, spaces, board)
@@ -41,4 +65,5 @@ module KingHelper
     end
   end
 
+  # add castling
 end
