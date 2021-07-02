@@ -44,30 +44,16 @@ module StalemateHelper
   def moveable_queen?(king_coords, move_type, piece, move_coords, board)
     path = false
     if move_type == :rook_moves
-      path = moveable_bishop?(king_coords, move_type, piece, move_coords, board)
-    elsif move_type == :bishop_moves
       path = moveable_rook?(king_coords, move_type, piece, move_coords, board)
+    elsif move_type == :bishop_moves
+      path = moveable_bishop?(king_coords, move_type, piece, move_coords, board)
     end
-    return false if path == false
 
-    move = nil
-
-    path.each do |ally_coords|
-      if move_type == :rook_moves
-        move = get_legal_vert_horiz_moves([king_coords, ally_coords],
-                                          board, piece)
-        unless move == nil
-          return true
-        end
-      elsif move_type == :bishop_moves
-        move = get_legal_diag_moves([king_coords, ally_coords],
-                                    board, piece)
-        unless move == nil
-          return true
-        end
-      end
+    if path == false
+      return false
+    else
+      return true
     end
-    return false
   end
 
   def moveable_rook?(king_coords, move_type, piece, move_coords, board)

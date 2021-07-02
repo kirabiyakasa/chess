@@ -54,7 +54,6 @@ module KingHelper
 
     legal_king_moves = get_legal_king_moves(king_coords, king_moves,
                                             board, enemy_paths)
-
     if @checked_by.length < 2
       legal_moves = get_legal_move_list(king_coords, board, enemy_paths)
       return legal_moves + legal_king_moves

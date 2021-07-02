@@ -98,3 +98,20 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 end
+
+def delete_white_rows(spaces)
+  spaces.keys.each do |column|
+    2.times do |i|
+      spaces[column][i] = ' '
+    end
+  end
+end
+
+def delete_black_rows(spaces)
+  spaces.keys.each do |column|
+    2.times do |i|
+      j = i + 6
+      spaces[column][j] = ' '
+    end
+  end
+end
