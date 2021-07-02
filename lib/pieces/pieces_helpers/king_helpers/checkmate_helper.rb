@@ -45,7 +45,9 @@ module CheckmateHelper
       file = king_coords[0] + move[0]
       rank = king_coords[1] + move[1]
       unless spaces[file] == nil
+        return legal_king_moves if rank.negative?
         space = spaces[file][rank]
+        return legal_king_moves if space == nil
 
         if space == ' '
           unless enemy_paths.include?([file, rank])
@@ -53,7 +55,7 @@ module CheckmateHelper
               legal_king_moves << [file, rank]
             end
           end
-        elsif enemy_paths.include?([file, rank])
+        elsif space.color != @color
           if mock_move(king_coords, nil, [file, rank], spaces)
             legal_king_moves << [file, rank]
           end
@@ -72,9 +74,7 @@ module CheckmateHelper
     return legal_moves
   end
 
-  # enemy coords == destination
-  # move coords == direction
-  def get_legal_moves(king_coords, board, enemy_coords)
+  def get_legal_moves(king_coords, board, end_coords)
     spaces = board.spaces
     ally_moves = get_moves()
     legal_moves = []
@@ -84,22 +84,22 @@ module CheckmateHelper
 
         case move_type
         when :rook_moves
-          piece = get_vert_horiz_piece(enemy_coords, move_coords, spaces)
-          legal_move = get_legal_vert_horiz_moves([king_coords, enemy_coords],
+          piece = get_vert_horiz_piece(end_coords, move_coords, spaces)
+          legal_move = get_legal_vert_horiz_moves([king_coords, end_coords],
                                                    board, piece)
           legal_move == nil ? nil : legal_moves << legal_move
         when :bishop_moves
-          piece = get_diagonal_piece(enemy_coords, move_coords, spaces)
-          legal_move = get_legal_diag_moves([king_coords, enemy_coords],
+          piece = get_diagonal_piece(end_coords, move_coords, spaces)
+          legal_move = get_legal_diag_moves([king_coords, end_coords],
                                              board, piece)
           legal_move == nil ? nil : legal_moves << legal_move
         when :knight_moves
-          piece = get_knight(enemy_coords, move_coords, spaces)
-          legal_move = get_legal_knight_moves([king_coords, enemy_coords],
+          piece = get_knight(end_coords, move_coords, spaces)
+          legal_move = get_legal_knight_moves([king_coords, end_coords],
                                                board, piece)
           legal_move == nil ? nil : legal_moves << legal_move
         when :pawn_moves
-          legal_move = get_legal_pawn_moves(king_coords, enemy_coords,
+          legal_move = get_legal_pawn_moves(king_coords, end_coords,
                                             move_coords, spaces)
           legal_move == nil ? nil : legal_moves << legal_move
         end
@@ -108,16 +108,15 @@ module CheckmateHelper
     return legal_moves
   end
 
-  # enemy coords is destination
   def get_legal_vert_horiz_moves(coords, board, piece)
     king_coords = coords[0]
-    enemy_coords = coords[1]
+    end_coords = coords[1]
 
     spaces = board.spaces
     piece_coords = board.get_piece_coords(piece)
 
     if piece != nil && piece.color == @color
-      if mock_move(king_coords, piece_coords, enemy_coords, spaces)
+      if mock_move(king_coords, piece_coords, end_coords, spaces)
         if piece.class.name == 'Rook' || piece.class.name == 'Queen'
           return piece_coords
         else
@@ -130,13 +129,13 @@ module CheckmateHelper
 
   def get_legal_diag_moves(coords, board, piece)
     king_coords = coords[0]
-    enemy_coords = coords[1]
+    end_coords = coords[1]
 
     spaces = board.spaces
     piece_coords = board.get_piece_coords(piece)
 
     if piece != nil && piece.color == @color
-      if mock_move(king_coords, piece_coords, enemy_coords, spaces)
+      if mock_move(king_coords, piece_coords, end_coords, spaces)
         if piece.class.name == 'Bishop' || piece.class.name == 'Queen'
           return piece_coords
         else
@@ -149,12 +148,12 @@ module CheckmateHelper
 
   def get_legal_knight_moves(coords, board, piece)
     king_coords = coords[0]
-    enemy_coords = coords[1]
+    end_coords = coords[1]
 
     spaces = board.spaces
     piece_coords = board.get_piece_coords(piece)
 
-    if mock_move(king_coords, piece_coords, enemy_coords, spaces)
+    if mock_move(king_coords, piece_coords, end_coords, spaces)
       if piece.class.name == 'Knight'
         return piece_coords
       else
@@ -184,8 +183,6 @@ module CheckmateHelper
         return piece_coords
       end
     elsif move_coords[0] != 0 && spaces[file][rank] == ' '
-      # it thinks the destination (enemy rook) is an ally pawn and the pieces
-      # to the side are enemy pawns
       if legal_en_passant?([king_coords, destination, piece_coords],
                             spaces, ally_piece)
         return piece_coords
@@ -213,6 +210,11 @@ module CheckmateHelper
       spaces[file][rank + -coord_change[1]] = ' '
       legality = mock_move(king_coords, piece_coords, destination, spaces)
       spaces[file][rank + -coord_change[1]] = enemy_piece
+      if legality
+        unless enemy_piece.en_passant
+          legality = false
+        end
+      end
     end
     return legality
   end
@@ -226,6 +228,7 @@ module CheckmateHelper
 
     destination = spaces[piece_move[0]][piece_move[1]]
     piece = spaces[file][rank]
+    return false if piece_move[1].negative?
     spaces[file][rank] = ' '
     spaces[piece_move[0]][piece_move[1]] = piece
 
@@ -234,7 +237,6 @@ module CheckmateHelper
     else
       updated_king_coords = king_coords
     end
-
 
     unless checked?(updated_king_coords, spaces)
       move_legality = true

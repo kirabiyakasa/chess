@@ -71,17 +71,17 @@ module CheckHelper
   end
 
   def checked_by_pawn?(king_coords, pawn_coords, spaces)
-    unless pawn_coords[0] - king_coords[0] == 1
+    unless (king_coords[0] - pawn_coords[0]).abs == 1
       return nil
     end
 
     pawn = spaces[pawn_coords[0]][pawn_coords[1]]
 
-    if @color == 'white' || pawn.color == 'black'
+    if @color == 'white'
       unless pawn_coords[1] > king_coords[1]
         return nil
       end
-    elsif @color == 'black' || pawn.color == 'white'
+    elsif @color == 'black'
       unless pawn_coords[1] < king_coords[1]
         return nil
       end
