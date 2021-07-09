@@ -18,7 +18,10 @@ class Board
     start_coords = select_piece(interface, player)
     end_coords = false
 
-    while end_coords == false || end_coords == 'cancel'
+    while end_coords == false || ['save', 'cancel'].include?(end_coords)
+      if start_coords == 'save' || end_coords == 'save'
+        return 'save'
+      end
       end_coords = select_destination(interface, player, start_coords, king)
       if end_coords == 'cancel'
         start_coords = select_piece(interface, player)
@@ -46,25 +49,29 @@ class Board
   def get_coordinates(interface, type)
     interface.ask_for_file(type)
     file = gets.chomp
-    until ('a'..'h').include?(file.downcase) || file == 'y'
+    until ('a'..'h').include?(file.downcase) || file == 'y' || file == 's'
       interface.show_invalid_input
       interface.ask_for_file(type)
       file = gets.chomp
     end
     if file == 'y'
       return 'cancel'
+    elsif file == 's'
+      return 'save'
     end
     file = convert_file(file.downcase).to_i
 
     interface.ask_for_rank(type)
     rank = gets.chomp
-    until ('1'..'8').include?(rank) || rank == 'y'
+    until ('1'..'8').include?(rank) || rank == 'y' || rank == 's'
       interface.show_invalid_input
       interface.ask_for_rank(type)
       rank = gets.chomp
     end
     if rank == 'y'
       return 'cancel'
+    elsif rank == 's'
+      return 'save'
     end
 
     rank = rank.to_i - 1
@@ -72,7 +79,7 @@ class Board
   end
 
   def get_space(coords)
-    return nil if coords == 'cancel'
+    return nil if coords == 'cancel' || coords == 'save'
     rank = coords[0]
     file = coords[1]
     space = @spaces[rank][file]
@@ -89,6 +96,8 @@ class Board
     while piece == ' ' || piece == nil || player.color != piece.color
       if start_coords == 'cancel'
         interface.show_canceled_move_input
+      elsif start_coords == 'save'
+        return 'save'
       else
         interface.show_invalid_selection(start_coords)
       end

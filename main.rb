@@ -38,18 +38,47 @@ def setup_players(colors)
   return [player1, player2]
 end
 
-def start_game()
-  interface = Interface.new
-  interface.show_rules
+def save_game(game)
+  saved_game = YAML.dump(game)
+  save_file = "save_file.yml"
+
+  File.open(save_file, 'w') do |file|
+    file.write saved_game
+  end
+  start_game()
+end
+
+def load_game()
+  begin
+    game = YAML.load(File.read("save_file.yml"))
+    game.resume_game()
+  rescue
+    puts "Unable to load game."
+    start_game(interface)
+  end
+end
+
+def new_game()
   colors = ['white', 'black']
   players = setup_players(colors)
   board = Board.new(players[0], players[1])
   game = GameLogic.new(interface, board)
   game.play_game
 end
+
+def start_game()
+  interface = Interface.new
+  interface.show_controls
+  interface.show_title
+  interface.show_title_menu
+  input = gets.chomp
+  until input == '1' || input == '2'
+    input = gets.chomp
+  end
+  if input == 1
+    new_game()
+  else
+    load_game()
+  end
+end
 start_game()
-
-# check if king is in check and disallow all other moves
-
-# allow for castling
-# allow for piece recovery if pawn reaches other side of the board

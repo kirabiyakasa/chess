@@ -1,6 +1,16 @@
 class Interface
 
-  def show_rules()
+  def show_controls()
+  end
+
+  def show_title()
+    puts "\n          -------      " +
+    "\n          |Chess|      " +
+    "\n          -------      "
+  end
+
+  def show_title_menu()
+    puts "1) New Game    2) Load Game"
   end
 
   def show_players(p1, p2)
@@ -27,8 +37,9 @@ class Interface
       end
       board_display += "\n"
     end
-    cancel_command = "                    y) cancel\n"
-    board_display = board_display + "\n" + cancel_command
+    save_command = " s) save          "
+    cancel_command = "y) cancel\n"
+    board_display = board_display + "\n" + save_command + cancel_command
     puts board_display
   end
   # columns (files) are lettered

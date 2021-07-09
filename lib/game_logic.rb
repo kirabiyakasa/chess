@@ -1,3 +1,5 @@
+require 'yaml'
+
 require 'pry'
 
 class GameLogic
@@ -5,10 +7,20 @@ class GameLogic
   def initialize(interface, board)
     @interface = interface
     @board = board
+    @current_turn = nil
   end
 
   def play_game()
+    @current_turn = 'white'
     move_white()
+  end
+
+  def resume_game()
+    if @current_turn == 'white'
+      move_white()
+    else
+      move_black()
+    end
   end
 
   private
@@ -22,10 +34,12 @@ class GameLogic
 
     puts "\n#{player.name}'s Turn."
     unless end_game?(white_king)
-      until move_resolved == true
+      until move_resolved == true || move_resolved == 'save'
         move_resolved = @board.move_piece(@interface, player, white_king)
       end
+      save_game(self) if move_resolved == 'save'
     end
+    @current_turn = 'black'
     move_black()
   end
 
@@ -38,10 +52,12 @@ class GameLogic
 
     puts "\n#{player.name}'s Turn."
     unless end_game?(black_king)
-      until move_resolved == true
+      until move_resolved == true || move_resolved == 'save'
         move_resolved = @board.move_piece(@interface, player, black_king)
       end
+      save_game(self) if move_resolved == 'save'
     end
+    @current_turn = 'white'
     move_white()
   end
 
