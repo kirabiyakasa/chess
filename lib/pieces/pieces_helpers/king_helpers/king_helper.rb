@@ -1,6 +1,7 @@
 require 'pry'
 
 module KingHelper
+  include PiecesHelper
 
   def checked?(king_coords, spaces)
     @checked_by = []
@@ -64,5 +65,60 @@ module KingHelper
     end
   end
 
-  # add castling
+  def king_movement?(start_coords, coord_change, end_coords, spaces)
+    if coord_change[0].abs == 2
+      if castling?(start_coords, coord_change, end_coords, spaces)
+        @moved = true
+        return true
+      end
+    end
+    return false unless coord_change[0].abs == 1 || coord_change[1].abs == 1
+    return false if coord_change[0].abs > 1 || coord_change[1].abs > 1
+
+    destination = spaces[end_coords[0]][end_coords[1]]
+    unless destination == ' '
+      return false if destination.color == @color
+    end
+    @moved = true
+    return true
+  end
+
+  def castling?(start_coords, coord_change, end_coords, spaces)
+    return false if @moved
+    king_coords = start_coords
+    return false if checked?(king_coords, spaces)
+
+    rook = nil
+    coord_change[0] > 0 ? direction = 1 : direction = -1
+    file = start_coords[0] += direction
+    until spaces[file] == nil || spaces[file][end_coords[1]] != ' '
+      # check if king is in check for first 2 spaces
+      if direction.negative? && end_coords[0] - file <= 0 ||
+         direction.positive? && end_coords[0] - file >= 0
+
+        unless mock_move(king_coords, nil, [file, end_coords[1]], spaces)
+          # king cannot move through or into check
+          return false
+        end
+      end
+      file += direction
+    end
+
+    if spaces[file] == nil
+      return false
+    else
+      piece = spaces[file][end_coords[1]]
+      unless piece.class.name == 'Rook' && piece.color == @color
+        return false
+      end
+      return false if piece.moved
+      rook = piece
+    end
+
+    # move the rook
+    spaces[file][end_coords[1]] = ' '
+    spaces[start_coords[0] + direction][start_coords[1]] = rook
+    return true
+  end
+
 end

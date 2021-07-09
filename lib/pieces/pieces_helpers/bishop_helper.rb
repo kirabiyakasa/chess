@@ -2,10 +2,10 @@ require 'pry'
 
 module BishopHelper
 
-  def get_diagonal_moves(coord_diff, start_coords, end_coords, spaces)
+  def get_diagonal_moves(coord_change, start_coords, end_coords, spaces)
     direction = []
-    coord_diff[0].positive? ? direction << 1 : direction << -1
-    coord_diff[1].positive? ? direction << 1 : direction << -1
+    coord_change[0].positive? ? direction << 1 : direction << -1
+    coord_change[1].positive? ? direction << 1 : direction << -1
 
     path = []
     file = start_coords[0]
@@ -21,12 +21,12 @@ module BishopHelper
 
   private
 
-  def diagonal_movement?(start_coords, coord_diff, end_coords, spaces)
-    unless coord_diff[0].abs == coord_diff[1].abs
+  def diagonal_movement?(start_coords, coord_change, end_coords, spaces)
+    unless coord_change[0].abs == coord_change[1].abs
       return false
     end
 
-    path = get_diagonal_moves(coord_diff, start_coords, end_coords, spaces)
+    path = get_diagonal_moves(coord_change, start_coords, end_coords, spaces)
   
     return false if path.empty?
   

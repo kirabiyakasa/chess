@@ -6,11 +6,12 @@ class Rook
   include PiecesHelper
   include RookHelper
 
-  attr_reader :color, :icon
+  attr_reader :color, :icon, :moved
 
   def initialize(color)
     @color = color
     @icon = get_icon()
+    @moved = false
   end
 
   private
@@ -23,9 +24,11 @@ class Rook
 
     if vertical_movement?(start_coords, coord_change, end_coords, spaces)
       capture(spaces, capture_coords)
+      @moved = true
       return true
     elsif horizontal_movement?(start_coords, coord_change, end_coords, spaces)
       capture(spaces, capture_coords)
+      @moved = true
       return true
     end
     return false

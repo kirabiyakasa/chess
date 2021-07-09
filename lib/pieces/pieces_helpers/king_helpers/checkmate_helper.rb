@@ -2,6 +2,36 @@ require 'pry'
 
 module CheckmateHelper
 
+  def mock_move(king_coords, piece_coords, piece_move, spaces)
+    return false if king_coords == piece_coords
+    move_legality = false
+
+    piece_coords == nil ? file = king_coords[0] : file = piece_coords[0]
+    piece_coords == nil ? rank = king_coords[1] : rank = piece_coords[1]
+
+    destination = spaces[piece_move[0]][piece_move[1]]
+    piece = spaces[file][rank]
+    return false if piece_move[1].negative?
+    spaces[file][rank] = ' '
+    spaces[piece_move[0]][piece_move[1]] = piece
+
+    if piece_coords == nil
+      updated_king_coords = [piece_move[0], piece_move[1]]
+    else
+      updated_king_coords = king_coords
+    end
+
+    unless checked?(updated_king_coords, spaces)
+      move_legality = true
+    end
+
+    spaces[file][rank] = piece
+    spaces[piece_move[0]][piece_move[1]] = destination
+    checked?(king_coords, spaces)
+
+    return move_legality
+  end
+
   private
 
   def get_check_paths(king_coords, spaces, board)
@@ -12,19 +42,19 @@ module CheckmateHelper
 
       file = king_coords[0] - piece_coords[0]
       rank = king_coords[1] - piece_coords[1]
-      coord_diff = [file, rank]
+      coord_change = [file, rank]
 
       if piece.class.name == 'Bishop' || piece.class.name == 'Queen'
-        unless coord_diff[0] == 0 || coord_diff[1] == 0
-          path = piece.get_diagonal_moves(coord_diff, piece_coords,
+        unless coord_change[0] == 0 || coord_change[1] == 0
+          path = piece.get_diagonal_moves(coord_change, piece_coords,
                                           king_coords, spaces)
           paths += [piece_coords] + path
         end
       end
 
       if piece.class.name == 'Rook' || piece.class.name == 'Queen'
-        if coord_diff[0] == 0 || coord_diff[1] == 0
-          path = piece.get_horiz_vert_moves(coord_diff, piece_coords,
+        if coord_change[0] == 0 || coord_change[1] == 0
+          path = piece.get_horiz_vert_moves(coord_change, piece_coords,
                                             king_coords, spaces)
           paths += [piece_coords] + path
         end
@@ -217,36 +247,6 @@ module CheckmateHelper
       end
     end
     return legality
-  end
-
-  def mock_move(king_coords, piece_coords, piece_move, spaces)
-    return false if king_coords == piece_coords
-    move_legality = false
-
-    piece_coords == nil ? file = king_coords[0] : file = piece_coords[0]
-    piece_coords == nil ? rank = king_coords[1] : rank = piece_coords[1]
-
-    destination = spaces[piece_move[0]][piece_move[1]]
-    piece = spaces[file][rank]
-    return false if piece_move[1].negative?
-    spaces[file][rank] = ' '
-    spaces[piece_move[0]][piece_move[1]] = piece
-
-    if piece_coords == nil
-      updated_king_coords = [piece_move[0], piece_move[1]]
-    else
-      updated_king_coords = king_coords
-    end
-
-    unless checked?(updated_king_coords, spaces)
-      move_legality = true
-    end
-
-    spaces[file][rank] = piece
-    spaces[piece_move[0]][piece_move[1]] = destination
-    checked?(king_coords, spaces)
-
-    return move_legality
   end
 
 end
