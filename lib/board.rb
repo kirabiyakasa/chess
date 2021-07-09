@@ -21,11 +21,10 @@ class Board
     while end_coords == false || end_coords == 'cancel'
       end_coords = select_destination(interface, player, start_coords, king)
       if end_coords == 'cancel'
-        # interface.show_canceled_move
         start_coords = select_piece(interface, player)
       end
     end
-    move_resolved = resolve_move(start_coords, end_coords)
+    move_resolved = resolve_move(start_coords, end_coords, interface)
     return move_resolved
   end
 
@@ -44,33 +43,36 @@ class Board
 
   private
 
-  def get_coordinates(interface)
-    interface.ask_for_file
+  def get_coordinates(interface, type)
+    interface.ask_for_file(type)
     file = gets.chomp
     until ('a'..'h').include?(file.downcase) || file == 'y'
       interface.show_invalid_input
-      interface.ask_for_file
+      interface.ask_for_file(type)
       file = gets.chomp
     end
     if file == 'y'
-      puts 'Input canceled'
       return 'cancel'
     end
     file = convert_file(file.downcase).to_i
 
-    interface.ask_for_rank
+    interface.ask_for_rank(type)
     rank = gets.chomp
-    until ('1'..'8').include?(rank)
+    until ('1'..'8').include?(rank) || rank == 'y'
       interface.show_invalid_input
-      interface.ask_for_rank
+      interface.ask_for_rank(type)
       rank = gets.chomp
     end
+    if rank == 'y'
+      return 'cancel'
+    end
+
     rank = rank.to_i - 1
     return [file, rank]
   end
-  # y key is cancel
 
   def get_space(coords)
+    return nil if coords == 'cancel'
     rank = coords[0]
     file = coords[1]
     space = @spaces[rank][file]
@@ -79,15 +81,18 @@ class Board
 
   def select_piece(interface, player)
     interface.show_piece_select
-    start_coords = get_coordinates(interface)
+    start_coords = get_coordinates(interface, 'piece')
+    piece = nil
+
     piece = get_space(start_coords)
-    while piece == ' ' || player.color != piece.color
+
+    while piece == ' ' || piece == nil || player.color != piece.color
       if start_coords == 'cancel'
-        puts 'Input canceled. Select a new piece to move.'
+        interface.show_canceled_move_input
       else
         interface.show_invalid_selection(start_coords)
       end
-      start_coords = get_coordinates(interface)
+      start_coords = get_coordinates(interface, 'piece')
       piece = get_space(start_coords)
     end
     return start_coords
@@ -95,7 +100,7 @@ class Board
 
   def select_destination(interface, player, start_coords, king)
     interface.show_destination_select
-    end_coords = get_coordinates(interface)
+    end_coords = get_coordinates(interface, 'destination')
 
     move_legality = false
     while [false, 'checked'].include?(move_legality) || end_coords == 'cancel'
@@ -107,19 +112,25 @@ class Board
 
       if move_legality == true
         king_coords = get_piece_coords(king)
-        if king.mock_move(king_coords, start_coords, end_coords, @spaces)
-          move_legality = true
-        else
-          move_legality = 'checked'
+        unless king_coords == start_coords
+          if king.mock_move(king_coords, start_coords, end_coords, @spaces)
+            move_legality = true
+          else
+            move_legality = 'checked'
+          end
         end
       end
 
       if move_legality == false
         interface.show_invalid_destination
-        end_coords = get_coordinates(interface)
+        end_coords = get_coordinates(interface, 'destination')
       elsif move_legality == 'checked'
-        interface.show_king_check
-        end_coords = get_coordinates(interface)
+        if @black_king.checked_by.any? || @white_king.checked_by.any?
+          interface.show_escape_check
+        else
+          interface.show_move_into_check
+        end
+        end_coords = get_coordinates(interface, 'destination')
       end
     end
     return end_coords
@@ -134,17 +145,46 @@ class Board
     return legality
   end
 
-  def resolve_move(start_coords, end_coords)
+  def resolve_move(start_coords, end_coords, interface)
     start_file = start_coords[0]
     start_rank = start_coords[1]
+    piece = @spaces[start_file][start_rank]
+
+    if piece.class.name == 'Pawn'
+      if piece.promote_pawn?(end_coords)
+        piece = promote_pawn(interface, piece.color)
+      end
+    end
 
     end_file = end_coords[0]
     end_rank = end_coords[1]
 
-    piece = @spaces[start_file][start_rank]
     @spaces[end_file][end_rank] = piece
     @spaces[start_file][start_rank] = ' '
     return true
+  end
+
+  def promote_pawn(interface, color)
+    interface.show_pawn_promotion()
+    input = gets.chomp
+    until (1..4).include?(input.to_i)
+      puts 'Invalid input. Enter a number 1-4'
+      input = gets.chomp
+    end
+    selection = input.to_i
+    piece = nil
+
+    case selection
+    when 1
+      piece = Queen.new(color)
+    when 2
+      piece = Bishop.new(color)
+    when 3
+      piece = Knight.new(color)
+    when 4
+      piece = Rook.new(color)
+    end
+    return piece
   end
 
   def convert_file(file)

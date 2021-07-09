@@ -10,7 +10,7 @@ class King
   include CheckmateHelper
   include StalemateHelper
 
-  attr_reader :color, :icon, :moved
+  attr_reader :color, :icon, :moved, :checked_by
 
   def initialize(color)
     @color = color

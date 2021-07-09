@@ -16,9 +16,11 @@ class GameLogic
   def move_white()
     white_king = @board.white_king
     @board.p1.color == 'white' ? player = @board.p1 : player = @board.p2
-    @interface.show_board(@board.spaces, @board.p1, @board.p2)
+    @interface.show_players(@board.p1, @board.p2)
+    @interface.show_board(@board.spaces)
     move_resolved = false
 
+    puts "\n#{player.name}'s Turn."
     unless end_game?(white_king)
       until move_resolved == true
         move_resolved = @board.move_piece(@interface, player, white_king)
@@ -30,9 +32,11 @@ class GameLogic
   def move_black()
     black_king = @board.black_king
     @board.p1.color == 'black' ? player = @board.p1 : player = @board.p2
-    @interface.show_board(@board.spaces, @board.p1, @board.p2)
+    @interface.show_players(@board.p1, @board.p2)
+    @interface.show_board(@board.spaces)
     move_resolved = false
 
+    puts "\n#{player.name}'s Turn."
     unless end_game?(black_king)
       until move_resolved == true
         move_resolved = @board.move_piece(@interface, player, black_king)
@@ -51,6 +55,7 @@ class GameLogic
       if king.checkmate?(king_coords, @board.spaces, @board)
         # show lost game
       end
+      @interface.show_king_check
     when false
       if king.stalemate?(king_coords, @board)
         # show stalemate

@@ -24,6 +24,14 @@ module PawnHelper
     return false
   end
 
+  def promote_pawn?(end_coords)
+    if end_coords[1] == 0 || end_coords[1] == 7
+      return true
+    else
+      return false
+    end
+  end
+
   private
 
   def vertical_movement?(coord_change, end_coords, spaces)

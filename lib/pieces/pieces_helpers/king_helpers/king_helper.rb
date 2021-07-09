@@ -74,6 +74,10 @@ module KingHelper
     end
     return false unless coord_change[0].abs == 1 || coord_change[1].abs == 1
     return false if coord_change[0].abs > 1 || coord_change[1].abs > 1
+    unless mock_move(start_coords, nil, end_coords, spaces)
+      puts "\nMove will put king in check."
+      return false
+    end
 
     destination = spaces[end_coords[0]][end_coords[1]]
     unless destination == ' '
