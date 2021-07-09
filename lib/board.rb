@@ -14,12 +14,14 @@ class Board
     @black_king = @spaces[4][7]
   end
 
-  def move_piece(interface, player)
+  def move_piece(interface, player, king)
     start_coords = select_piece(interface, player)
     end_coords = false
+
     while end_coords == false || end_coords == 'cancel'
-      end_coords = select_destination(interface, player, start_coords)
+      end_coords = select_destination(interface, player, start_coords, king)
       if end_coords == 'cancel'
+        # interface.show_canceled_move
         start_coords = select_piece(interface, player)
       end
     end
@@ -91,27 +93,33 @@ class Board
     return start_coords
   end
 
-  def select_destination(interface, player, start_coords)
+  def select_destination(interface, player, start_coords, king)
     interface.show_destination_select
     end_coords = get_coordinates(interface)
-    space = get_space(end_coords)
 
     move_legality = false
-    while move_legality == false || end_coords == 'cancel'
+    while [false, 'checked'].include?(move_legality) || end_coords == 'cancel'
       if end_coords == 'cancel'
         return 'cancel'
       else
         move_legality = legal_move?(start_coords, end_coords)
       end
-  
+
+      if move_legality == true
+        king_coords = get_piece_coords(king)
+        if king.mock_move(king_coords, start_coords, end_coords, @spaces)
+          move_legality = true
+        else
+          move_legality = 'checked'
+        end
+      end
+
       if move_legality == false
         interface.show_invalid_destination
         end_coords = get_coordinates(interface)
-    # elsif checked?
-    #   move_legality = false
-    # end
-      else
-        space = get_space(end_coords)
+      elsif move_legality == 'checked'
+        interface.show_king_check
+        end_coords = get_coordinates(interface)
       end
     end
     return end_coords

@@ -21,7 +21,7 @@ class GameLogic
 
     unless end_game?(white_king)
       until move_resolved == true
-        move_resolved = @board.move_piece(@interface, player)
+        move_resolved = @board.move_piece(@interface, player, white_king)
       end
     end
     move_black()
@@ -35,7 +35,7 @@ class GameLogic
 
     unless end_game?(black_king)
       until move_resolved == true
-        move_resolved = @board.move_piece(@interface, player)
+        move_resolved = @board.move_piece(@interface, player, black_king)
       end
     end
     move_white()
