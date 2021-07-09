@@ -272,6 +272,8 @@ describe King do
           white_bishop = spaces[2][0]
           spaces[5][4] = white_bishop
 
+          spaces[3][6] = ' '
+
           expect(subject.check_legal_move([4, 7], [3, 6], spaces)).to eql(false)
         end
       end
