@@ -48,7 +48,7 @@ def save_game(game)
   start_game()
 end
 
-def load_game()
+def load_game(interface)
   begin
     game = YAML.load(File.read("save_file.yml"))
     game.resume_game()
@@ -79,7 +79,7 @@ def start_game()
   if input == '1'
     new_game(interface)
   else
-    load_game()
+    load_game(interface)
   end
 end
 start_game()
