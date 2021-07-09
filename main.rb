@@ -58,7 +58,8 @@ def load_game()
   end
 end
 
-def new_game()
+def new_game(interface)
+  binding.pry
   colors = ['white', 'black']
   players = setup_players(colors)
   board = Board.new(players[0], players[1])
@@ -75,8 +76,8 @@ def start_game()
   until input == '1' || input == '2'
     input = gets.chomp
   end
-  if input == 1
-    new_game()
+  if input == '1'
+    new_game(interface)
   else
     load_game()
   end
