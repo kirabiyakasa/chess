@@ -1,7 +1,5 @@
 require './lib/board_builder'
 
-require 'pry'
-
 describe Queen do
   context 'color is White' do
     subject { Queen.new('white') }

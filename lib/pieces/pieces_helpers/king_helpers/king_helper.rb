@@ -1,5 +1,3 @@
-require 'pry'
-
 module KingHelper
   include PiecesHelper
 

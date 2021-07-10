@@ -1,7 +1,5 @@
 require './lib/board_builder.rb'
 
-require 'pry'
-
 class Board
   attr_reader :p1, :p2, :white_king, :black_king, :spaces
 

@@ -1,5 +1,3 @@
-require 'pry'
-
 require './lib/pieces/pieces_helpers/pieces_helper'
 
 require './lib/pieces/bishop.rb'

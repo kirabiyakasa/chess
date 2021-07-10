@@ -1,6 +1,3 @@
-
-require 'pry'
-
 require './lib/board_builder'
 require './lib/board'
 require './lib/player'

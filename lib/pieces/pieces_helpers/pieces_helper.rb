@@ -1,5 +1,3 @@
-require 'pry'
-
 module PiecesHelper
 
   def check_legal_move(start_coords, end_coords, spaces)

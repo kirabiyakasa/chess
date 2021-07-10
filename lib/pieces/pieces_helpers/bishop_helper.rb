@@ -1,5 +1,3 @@
-require 'pry'
-
 module BishopHelper
 
   def get_diagonal_moves(coord_change, start_coords, end_coords, spaces)

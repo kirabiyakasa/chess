@@ -1,7 +1,5 @@
 require './lib/pieces/pieces_helpers/rook_helper'
 
-require 'pry'
-
 class Rook
   include PiecesHelper
   include RookHelper

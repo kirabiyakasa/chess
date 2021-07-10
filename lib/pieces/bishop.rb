@@ -1,7 +1,5 @@
 require './lib/pieces/pieces_helpers/bishop_helper'
 
-require 'pry'
-
 class Bishop
   include PiecesHelper
   include BishopHelper

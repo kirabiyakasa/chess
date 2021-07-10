@@ -1,5 +1,3 @@
-require 'pry'
-
 module CheckmateHelper
 
   def mock_move(king_coords, piece_coords, piece_move, spaces)

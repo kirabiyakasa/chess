@@ -1,8 +1,6 @@
 require './lib/pieces/pieces_helpers/bishop_helper'
 require './lib/pieces/pieces_helpers/rook_helper'
 
-require 'pry'
-
 class Queen
   include PiecesHelper
   include BishopHelper

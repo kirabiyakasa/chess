@@ -59,7 +59,6 @@ def load_game(interface)
 end
 
 def new_game(interface)
-  binding.pry
   colors = ['white', 'black']
   players = setup_players(colors)
   board = Board.new(players[0], players[1])
@@ -67,8 +66,7 @@ def new_game(interface)
   game.play_game
 end
 
-def start_game()
-  interface = Interface.new
+def start_game(interface)
   interface.show_controls
   interface.show_title
   interface.show_title_menu
@@ -82,4 +80,4 @@ def start_game()
     load_game(interface)
   end
 end
-start_game()
+start_game(Interface.new)

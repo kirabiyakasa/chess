@@ -1,7 +1,5 @@
 require './lib/pieces/pieces_helpers/pawn_helper'
 
-require 'pry'
-
 class Pawn
   include PiecesHelper
   include PawnHelper

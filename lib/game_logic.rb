@@ -1,7 +1,5 @@
 require 'yaml'
 
-require 'pry'
-
 class GameLogic
 
   def initialize(interface, board)
