@@ -97,4 +97,19 @@ class Interface
     puts "#{x}#{y} does not contain one of your pieces."
   end
 
+  def show_checkmate(winning_player, defeated_player)
+    puts "#{winning_player} wins!"
+    puts "#{winning_player} put #{defeated_player} into checkmate."
+  end
+
+  def show_stalemate(player_in_stalemate)
+    puts "Stalemate! #{player_in_stalemate} cannot make a legal move."
+  end
+
+  def show_play_again()
+    puts 'Would you like to play again?'
+    puts '                             '
+    puts '   y) yes            n) no   '
+  end
+
 end

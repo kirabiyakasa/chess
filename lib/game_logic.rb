@@ -67,15 +67,47 @@ class GameLogic
     case check
     when true
       if king.checkmate?(king_coords, @board.spaces, @board)
-        # show lost game
+        game_over('checkmate')
       end
       @interface.show_king_check
     when false
       if king.stalemate?(king_coords, @board)
-        # show stalemate
+        game_over('stalemate')
       end
     end
     return false 
+  end
+
+  def game_over(condition)
+    if condition == 'checkmate'
+      if @board.p1.color == king.color
+        show_checkmate(@board.p2, @board.p1)
+      else
+        show_checkmate(@board.p1, @board.p2)
+      end
+      @interface.show_play_again
+      play_again?()
+    elsif condition == 'stalemate'
+      if @board.p1.color == king.color
+        show_stalemate(@board.p2)
+      else
+        show_stalemate(@board.p1)
+      end
+      play_again?()
+    end
+  end
+
+  def play_again?()
+    input = gets.chomp
+    until input == '1' || input == '2'
+      puts 'Invalid input.'
+      input = gets.chomp
+    end
+    if input == '1'
+      new_game(@interface)
+    elsif input '2'
+      start_game(@interface)
+    end
   end
 
 end

@@ -72,6 +72,7 @@ def start_game(interface)
   interface.show_title_menu
   input = gets.chomp
   until input == '1' || input == '2'
+    puts 'Invalid input.'
     input = gets.chomp
   end
   if input == '1'
